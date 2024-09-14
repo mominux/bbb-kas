@@ -1,0 +1,73 @@
+header:
+  version: 1
+
+env:
+  MY_YOCTO_PATH: "/home/mominux/workspace/yocto"
+
+machine: beaglebone
+distro: poky
+target: console-image
+
+
+repos:
+  poky:
+    url: https://github.com/yoctoproject/poky.git
+    branch: scarthgap
+    path: "/home/mominux/workspace/yocto/source/poky"
+    layers:
+      meta:
+      meta-poky:
+      meta-yocto-bsp:
+
+  meta-openembedded:
+    url: git://git.openembedded.org/meta-openembedded
+    branch: scarthgap
+    path: "/home/mominux/workspace/yocto/layers/meta-openembedded"
+    layers:
+      meta-oe:
+      meta-python:
+      meta-networking:
+
+  meta-bbb:
+    url: https://github.com/jumpnow/meta-bbb.git
+    branch: scarthgap
+    path: "/home/mominux/workspace/yocto/layers/meta-bbb"
+
+  meta-security:
+    url: git://git.yoctoproject.org/meta-security.git
+    branch: scarthgap
+    path: "/home/mominux/workspace/yocto/layers/meta-security"
+
+  meta-qt5:
+    url: https://code.qt.io/yocto/meta-qt5.git
+    branch: lts-5.15
+    path: "/home/mominux/workspace/yocto/layers/meta-qt5"
+
+local_conf_header:
+    meta-bbb: |
+        DISTRO_FEATURES:append = " security systemd usrmerge"
+        PACKAGE_CLASSES ?= "package_rpm"
+        PATCHRESOLVE = "noop"
+        BB_DISKMON_DIRS ??= "\
+            STOPTASKS,${TMPDIR},1G,100K \
+            STOPTASKS,${DL_DIR},1G,100K \
+            STOPTASKS,${SSTATE_DIR},1G,100K \
+            STOPTASKS,/tmp,100M,100K \
+            HALT,${TMPDIR},100M,1K \
+            HALT,${DL_DIR},100M,1K \
+            HALT,${SSTATE_DIR},100M,1K \
+            HALT,/tmp,10M,1K"
+
+        PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
+        CONF_VERSION = "2"
+        TMPDIR = "/home/mominux/workspace/yocto/build/kas_custom_bbb"
+        DL_DIR ?= "${HOME}/workspace/yocto/build/bitbake.downloads"
+        SSTATE_DIR ?= "${HOME}/workspace/yocto/build/bitbake.sstate"
+        EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
+        USER_CLASSES ?= "buildstats"
+        DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
+        VIRTUAL-RUNTIME_init_manager = "systemd"
+        VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+        KERNEL_FEATURES:append = " cfg/systemd.scc"
+        #modify the root user's home directory        
+        ROOT_HOME = "/root"
