@@ -1,9 +1,6 @@
 header:
   version: 1
 
-env:
-  MY_YOCTO_PATH: "/home/mominux/workspace/yocto"
-
 machine: beaglebone
 distro: poky
 target: console-image
