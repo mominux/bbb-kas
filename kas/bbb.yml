@@ -10,7 +10,7 @@ repos:
   poky:
     url: https://github.com/yoctoproject/poky.git
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/source/poky"
+    path: "source/poky"
     layers:
       meta:
       meta-poky:
@@ -19,7 +19,7 @@ repos:
   meta-openembedded:
     url: git://git.openembedded.org/meta-openembedded
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/layers/meta-openembedded"
+    path: "layers/meta-openembedded"
     layers:
       meta-oe:
       meta-python:
@@ -28,17 +28,17 @@ repos:
   meta-bbb:
     url: https://github.com/jumpnow/meta-bbb.git
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/layers/meta-bbb"
+    path: "layers/meta-bbb"
 
   meta-security:
     url: git://git.yoctoproject.org/meta-security.git
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/layers/meta-security"
+    path: "layers/meta-security"
 
   meta-qt5:
     url: https://code.qt.io/yocto/meta-qt5.git
     branch: lts-5.15
-    path: "/home/mominux/workspace/yocto/layers/meta-qt5"
+    path: "layers/meta-qt5"
 
 local_conf_header:
     meta-bbb: |
@@ -57,9 +57,9 @@ local_conf_header:
 
         PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
         CONF_VERSION = "2"
-        TMPDIR = "/home/mominux/workspace/yocto/build/kas_custom_bbb"
-        DL_DIR ?= "${HOME}/workspace/yocto/build/bitbake.downloads"
-        SSTATE_DIR ?= "${HOME}/workspace/yocto/build/bitbake.sstate"
+        #TMPDIR = "kas_custom_bbb"
+        DL_DIR ?= "${HOME}/workspace/embeddedlinux/yocto/bitbake.downloads"
+        SSTATE_DIR ?= "${HOME}/workspace/embeddedlinux/yocto/bitbake.sstate"
         EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
         USER_CLASSES ?= "buildstats"
         DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"

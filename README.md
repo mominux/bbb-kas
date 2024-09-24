@@ -41,7 +41,7 @@ repos:
   poky:
     url: https://github.com/yoctoproject/poky.git
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/source/poky"
+    path: "source/poky"
     layers:
       meta:
       meta-poky:
@@ -50,7 +50,7 @@ repos:
   meta-openembedded:
     url: git://git.openembedded.org/meta-openembedded
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/layers/meta-openembedded"
+    path: "layers/meta-openembedded"
     layers:
       meta-oe:
       meta-python:
@@ -59,17 +59,17 @@ repos:
   meta-bbb:
     url: https://github.com/jumpnow/meta-bbb.git
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/layers/meta-bbb"
+    path: "layers/meta-bbb"
 
   meta-security:
     url: git://git.yoctoproject.org/meta-security.git
     branch: scarthgap
-    path: "/home/mominux/workspace/yocto/layers/meta-security"
+    path: "layers/meta-security"
 
   meta-qt5:
     url: https://code.qt.io/yocto/meta-qt5.git
     branch: lts-5.15
-    path: "/home/mominux/workspace/yocto/layers/meta-qt5"
+    path: "layers/meta-qt5"
 ```
 
 ---
@@ -98,9 +98,9 @@ local_conf_header:
 
         PACKAGECONFIG:append:pn-qemu-system-native = " sdl"
         CONF_VERSION = "2"
-        TMPDIR = "/home/mominux/workspace/yocto/build/kas_custom_bbb"
-        DL_DIR ?= "${HOME}/workspace/yocto/build/bitbake.downloads"
-        SSTATE_DIR ?= "${HOME}/workspace/yocto/build/bitbake.sstate"
+        #TMPDIR = "kas_custom_bbb"
+        DL_DIR ?= "${HOME}/workspace/embeddedlinux/yocto/bitbake.downloads"
+        SSTATE_DIR ?= "${HOME}/workspace/embeddedlinux/yocto/bitbake.sstate"
         EXTRA_IMAGE_FEATURES ?= "debug-tweaks"
         USER_CLASSES ?= "buildstats"
         DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
@@ -117,20 +117,24 @@ local_conf_header:
 1. Install **kas**:
   
   ```bash
-  sudo apt-get install kas
+  sudo apt install python3-pip
+  pip install kas
   ```
   
-2. Build the environment:
+2. make the environment:
   
   ```bash
-  cd kas
-  kas build bbb.yml
+  kas checkout kas/bbb.yml
+  source source/poky/oe-init-build-env  build/
   ```
-  
-3. View the generated files in:
+3. make the image:
+  ```bash
+  bitbake console-image
+  ```  
+4. View the generated files in:
   
   ```bash
-  ls build/kas_custom_bbb/deploy/images/beaglebone/
+  ls tmp/deploy/images/beaglebone/
   ```
   
 
@@ -146,10 +150,10 @@ Use the following steps to format and prepare your SD card:
   lsblk  # Look for /dev/mmcblk--
   ```
   
-2. Create partitions and format the SD card:
+2. Create partitions and move the files to SD card:
   
   ```bash
-  layers/meta-bbb/scripts/create_sdcard_image.sh
+  layers/meta-bbb/scripts/mk2parts.sh
   ```
   
 3. Prepare the environment for the boot and root partition scripts:
@@ -163,19 +167,13 @@ Use the following steps to format and prepare your SD card:
 4. Copy the boot partition files:
   
   ```bash
-  layers/meta-bbb/scripts/copy_boot.sh /dev/mmcblk0p1
-  ```
-  
-  If the Linux image is not copied:
-  
-  ```bash
-  cp tmp/deploy/images/beaglebone/zImage /media/mominux/BOOT
+  layers/meta-bbb/scripts/copy_boot.sh mmcblk0
   ```
   
 5. Copy the root filesystem files:
   
   ```bash
-  layers/meta-bbb/scripts/copy_rootfs.sh /dev/mmcblk0p2
+  layers/meta-bbb/scripts/copy_rootfs.sh mmcblk0
   ```
   
 
